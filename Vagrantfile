@@ -12,7 +12,9 @@ Vagrant.configure("2") do |config|
 
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://vagrantcloud.com/search.
-  config.vm.box = "ubuntu/bionic64"
+  config.vm.box = "generic/ubuntu2204"
+  config.vm.box_version = "4.2.14"
+
 
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
@@ -28,8 +30,10 @@ Vagrant.configure("2") do |config|
   # Create a forwarded port mapping which allows access to a specific port
   # within the machine from a port on the host machine and only allow access
   # via 127.0.0.1 to disable public access
+  config.vm.network "forwarded_port", guest: 80, host: 80
   config.vm.network "forwarded_port", guest: 8081, host: 8081
   config.vm.network "forwarded_port", guest: 8082, host: 8082
+  config.vm.network "forwarded_port", guest: 3306, host: 3306
  # , host_ip: "192.168.33.10"
   # Create a private network, which allows host-only access to the machine
   # using a specific IP.
@@ -69,12 +73,13 @@ Vagrant.configure("2") do |config|
 		sudo dpkg -i puppet6-release-bionic.deb
 		sudo apt-get update
 		sudo apt-get install -y puppet-agent
+    cd /vagrant/modules && puppet module install puppetlabs-mysql --version 13.3.0
    SHELL
    
    config.vm.provision "puppet" do |puppet|
-    puppet.module_path = "modules"        
-    puppet.manifests_path = "manifests"   # Default
-    puppet.manifest_file = "default.pp"   # Default
+    puppet.module_path = "puppet/modules"        
+    puppet.manifests_path = "puppet/manifests"   # Default
+    puppet.manifest_file = "init.pp"   # Default
   end
 
 end

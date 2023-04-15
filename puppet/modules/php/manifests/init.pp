@@ -15,10 +15,7 @@ class php {
   }
   Exec["apt-update1"] -> Package <| |>
 
-  package { 'php7.4': 
-    ensure => installed,
-  }
-
+  package { 'php7.4': ensure => installed, }
   package { 'php7.4-mysql': ensure => installed, }
   package { 'php7.4-cli': ensure => installed, }
   package { 'php7.4-json': ensure => installed, }
