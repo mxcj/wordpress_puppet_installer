@@ -1,17 +1,20 @@
 
 Vagrant.configure("2") do |config|
 
+  #Operating System Section
   config.vm.box = "ubuntu/bionic64"
   config.vm.box_download_insecure=true
 
-  config.vm.network "forwarded_port", guest: 80, host: 80
+  #Network Section
+  config.vm.network "forwarded_port", guest: 80, host: 8081
   config.vm.network "private_network", ip: "192.168.33.10"
-  
-  config.vm.provider "virtualbox" do |vb|
 
+  #Hardware Section
+  config.vm.provider "virtualbox" do |vb|
      vb.memory = "2048"
   end
- 
+
+  #Install Section 
   config.vm.provision "shell", inline: <<-SHELL
       sudo wget https://apt.puppetlabs.com/puppet6-release-bionic.deb
       sudo dpkg -i puppet6-release-bionic.deb

@@ -1,4 +1,4 @@
-
+#Variables Definitions
 $document_root = '/home/vagrant'
 $project_directory = '/var/www/html'
 $username = 'root'
@@ -9,11 +9,10 @@ $dbpasswordWP = 'vagrant20'#Password Wordpress admin
 $wpadmin = 'wp_admin'
 $port = '8081'
 
-
+#Configure exec path for console
 Exec { path => "/bin/:/sbin/:/usr/bin/:/usr/sbin/:/usr/local/bin:/usr/local/sbin:~/.composer/vendor/bin/" }
 
-
-require nginx
+#Include modules
 require apache
 require php
 require mysql
