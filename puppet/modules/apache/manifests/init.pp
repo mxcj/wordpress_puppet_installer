@@ -11,7 +11,9 @@ class apache {
 
 
   file { '/etc/apache2/ports.conf':
+    ensure  => present,
     content => template('apache/ports.conf.erb'),
+    require => Package['apache2'],
   }
   
 
@@ -20,25 +22,25 @@ class apache {
     require => Package['apache2'],
   }
 
-  file { '/etc/apache2/sites-available/apache-init-site.conf':
+  file { '/etc/apache2/sites-available/wordpress.conf':
     content => template('apache/virtual-hosts.conf.erb'),
     require => File['/etc/apache2/sites-enabled/000-default.conf'],
   }
 
 
-  file { "/etc/apache2/sites-enabled/apache-init-site.conf":
+  file { "/etc/apache2/sites-enabled/wordpress.conf":
     ensure  => link,
-    target  => "/etc/apache2/sites-available/apache-init-site.conf",
-    require => File['/etc/apache2/sites-available/apache-init-site.conf'],
+    target  => "/etc/apache2/sites-available/wordpress.conf",
+    require => File['/etc/apache2/sites-available/wordpress.conf'],
     notify  => Service['apache2'],
   }
 
-  file { "${document_root}/index.html":
-    ensure  => present,
-    source => 'puppet:///modules/apache/index.html',
-    require => File['/etc/apache2/sites-enabled/apache-init-site.conf'],
-    notify  => Service['apache2'],
+  file { 'Remove file index':
+    path => "${project_directory}/index.html",
+    ensure => absent,
+    require => File['/etc/apache2/sites-enabled/wordpress.conf'],
   }
+
 
   service { 'apache2':
     ensure => running,

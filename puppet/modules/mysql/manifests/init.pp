@@ -1,30 +1,39 @@
 class mysql {
-
-
-  # Create a database and user for your application
-  mysql::db { 'myapp':
-    ensure => present,
+  $enhancers = [ 'mysql-server', 'libapache2-mod-php8.1', 'php-mysql' ]
+  package { $enhancers:
+    ensure => installed,
+    notify => Service['apache2']
   }
 
-  mysql::user { 'myapp':
-    ensure => present,
-    password_hash => mysql_password('myapppassword'),
-    require => Mysql::Db['myapp'],
+  service { 'Ensure mysql service is running and enable':
+    name => 'mysql',
+    ensure  => true,
+    enable  => true,
+    require => Package[$enhancers],
+    restart => "/usr/sbin/service mysql reload"
   }
 
-  # Allow remote access to the MySQL server
-  class { '::mysql::server::account_security':
-    remote_root => true,
+  exec { "set-mysql-password":
+    unless => "mysqladmin -u ${username} -p ${password} status",
+    command => "mysqladmin -u ${username} password ${password}",
+    require => Service["Ensure mysql service is running and enable"]
   }
 
-  # Set up a backup schedule for the MySQL data directory
-  class { '::mysql::server::backup':
-    backupuser => 'backupuser',
-    backuppassword => 'backuppassword',
-    backupdir => '/var/backups/mysql',
-    backupcompress => true,
-    backuprotate => 7,
-    backuphour => 2,
-    backupminute => 30,
+  file { 'Copy file exec': 
+    path => "${document_root}/create-db.sql",
+    ensure  => present,
+    content => template('mysql/create-db.sql.erb'),
+    #source => 'puppet:///modules/mysql/create-db.sql',
+    require => Exec['set-mysql-password']
+  }
+
+  exec { 'Run MySQL command from file':
+    command => "mysql -h localhost -u ${username} -D mysql < ${document_root}/create-db.sql",
+    require => File["Copy file exec"]
+  }
+
+  notify {'MySQL-Installed':
+    message => "Module mysql installed...",
+    require => Exec['Run MySQL command from file']
   }
 }

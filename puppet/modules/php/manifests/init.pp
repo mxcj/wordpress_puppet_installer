@@ -15,21 +15,28 @@ class php {
   }
   Exec["apt-update1"] -> Package <| |>
 
-  package { 'php7.4': ensure => installed, }
-  package { 'php7.4-mysql': ensure => installed, }
-  package { 'php7.4-cli': ensure => installed, }
-  package { 'php7.4-json': ensure => installed, }
-  package { 'php7.4-common': ensure => installed, }
-  package { 'php7.4-zip': ensure => installed, }
-  package { 'php7.4-gd': ensure => installed, }
-  package { 'php7.4-mbstring': ensure => installed, }
-  package { 'php7.4-curl': ensure => installed, }
-  package { 'php7.4-xml': ensure => installed, }
-  package { 'php7.4-bcmath': ensure => installed, }
-  package { 'php7.4-intl': ensure => installed, }
+  package { 'php8.1': ensure => installed, }
+  package { 'php8.1-mysql': ensure => installed, }
+  package { 'php8.1-cli': ensure => installed, }
+ # package { 'php8.1-json': ensure => installed, }
+  package { 'php8.1-common': ensure => installed, }
+  package { 'php8.1-zip': ensure => installed, }
+  package { 'php8.1-gd': ensure => installed, }
+  package { 'php8.1-mbstring': ensure => installed, }
+  package { 'php8.1-curl': ensure => installed, }
+  package { 'php8.1-xml': ensure => installed, }
+  package { 'php8.1-bcmath': ensure => installed, }
+  package { 'php8.1-intl': ensure => installed, }
+
+  exec { 'enable_php':
+      command => "a2enmod proxy_fcgi setenvif && a2enconf  && a2enmod php8.1",
+      notify => Service['apache2']
+    }
 
 
-  file { '/etc/apache2/sites-available/php-init-site.conf':
+
+
+  /*file { '/etc/apache2/sites-available/php-init-site.conf':
     content => template('php/virtual-hosts-php.conf.erb'),
   }
 
@@ -41,13 +48,13 @@ class php {
     notify  => Service['apache2'],
   }
 
-  file { "${document_root}/info.php":
+  file { "${project_directory}/info.php":
     ensure  => present,
     source => 'puppet:///modules/php/info.php',
     require => File['/etc/apache2/sites-enabled/php-init-site.conf'],
     notify  => Service['apache2'],
   }
-
+*/
  /* service { 'php7.4':
     ensure => running,
     enable => true,

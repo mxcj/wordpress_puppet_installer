@@ -1,8 +1,8 @@
 <VirtualHost *:8082>
   ServerAdmin webmaster@localhost
-  DocumentRoot <%= @document_root %>
+  DocumentRoot <%= @project_directory %>
 
-  <Directory <%= @document_root %>>
+  <Directory <%= @project_directory %>>
     Require all granted
   </Directory>
 
