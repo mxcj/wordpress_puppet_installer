@@ -6,7 +6,7 @@ Vagrant.configure("2") do |config|
   config.vm.box_download_insecure=true
 
   #Network Section
-  config.vm.network "forwarded_port", guest: 80, host: 8081
+  config.vm.network "forwarded_port", guest: 80, host: 8080
   config.vm.network "private_network", ip: "192.168.33.10"
 
   #Hardware Section

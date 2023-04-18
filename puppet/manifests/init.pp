@@ -7,7 +7,7 @@ $dbnameWP = 'wordpress'
 $dbuserWP = 'wordpress'
 $dbpasswordWP = 'vagrant20'#Password Wordpress admin
 $wpadmin = 'wp_admin'
-$port = '8081'
+$port = '8080'
 
 #Configure exec path for console
 Exec { path => "/bin/:/sbin/:/usr/bin/:/usr/sbin/:/usr/local/bin:/usr/local/sbin:~/.composer/vendor/bin/" }
@@ -18,7 +18,3 @@ require php
 require mysql
 require wordpress
 require wpcli
-
-
-
-
